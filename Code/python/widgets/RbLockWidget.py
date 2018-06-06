@@ -1,5 +1,5 @@
-from PyQt4 import QtGui, QtCore, uic
-from CommonWidgets import BoolBox, SliderSpinBox, MyDoubleSpinBox, MySpinBox
+from PyQt5 import QtGui, QtCore, uic, QtWidgets
+from widgets.CommonWidgets import BoolBox, SliderSpinBox, MyDoubleSpinBox, MySpinBox
 import os
 import numpy as np
 import zmq
@@ -19,7 +19,7 @@ import sys
   int state;
   """
 
-class RbLockWidget(QtGui.QWidget):
+class RbLockWidget(QtWidgets.QWidget):
 
     def __init__(self, settings, parent=None):
         super(RbLockWidget, self).__init__(parent)
@@ -54,28 +54,28 @@ class RbLockWidget(QtGui.QWidget):
 
 
     def setupUi(self):
-        self.grid = QtGui.QGridLayout(self)
+        self.grid = QtWidgets.QGridLayout(self)
         self.setLayout(self.grid)
 
-        self.log_display = QtGui.QTextEdit(self)
+        self.log_display = QtWidgets.QTextEdit(self)
         self.log_display.setReadOnly(True)
-        self.label_com = QtGui.QLabel('Port')
-        self.lineedit_com = QtGui.QLineEdit()
+        self.label_com = QtWidgets.QLabel('Port')
+        self.lineedit_com = QtWidgets.QLineEdit()
 
         self.connect_button = BoolBox(value=False, parent=self,
                                       ontext='Connected',
                                       offtext='Disconnected')
 
 
-        self.pz_offset_label = QtGui.QLabel('Piezo Output Offset')
-        self.curr_offset_label = QtGui.QLabel('Current Output Offset')
+        self.pz_offset_label = QtWidgets.QLabel('Piezo Output Offset')
+        self.curr_offset_label = QtWidgets.QLabel('Current Output Offset')
 
         self.piezo_offset_spinbox = SliderSpinBox(0, valrange=(32768, 2*32768), step_size=20, parent=self)
         self.current_offset_spinbox = SliderSpinBox(0, valrange=(0, 2*32768), step_size=100, parent=self)
 
         self.ramp_amplitude_spinbox = MySpinBox(self)
         self.ramp_amplitude_spinbox.setRange(0, 32768)
-        self.ramp_amplitude_label = QtGui.QLabel('Ramp Amplitude')
+        self.ramp_amplitude_label = QtWidgets.QLabel('Ramp Amplitude')
 
         self.grid.addWidget(self.label_com, 0, 0)
         self.grid.addWidget(self.lineedit_com, 0, 1)
@@ -96,7 +96,7 @@ class RbLockWidget(QtGui.QWidget):
         start_index = 3
         self.double_spin_boxes_list = []
         for index, label_string in enumerate(double_labels):
-            self.grid.addWidget(QtGui.QLabel(label_string), start_index+index, 0)
+            self.grid.addWidget(QtWidgets.QLabel(label_string), start_index+index, 0)
             sb = MyDoubleSpinBox(self)
             sb.setRange(0.0, 5e5)
             sb.setDecimals(3)
@@ -112,7 +112,7 @@ class RbLockWidget(QtGui.QWidget):
         start_index += len(double_labels)
         self.bool_spin_boxes_list = []
         for index, label_string in enumerate(bool_labels):
-            self.grid.addWidget(QtGui.QLabel(label_string), start_index+index, 0)
+            self.grid.addWidget(QtWidgets.QLabel(label_string), start_index+index, 0)
             sb = BoolBox(value=False, parent=self, ontext='Enabled',
                                 offtext='Disabled')
             self.bool_spin_boxes_list.append(sb)
@@ -131,7 +131,7 @@ class RbLockWidget(QtGui.QWidget):
                                 offtext='Unlocked')
         self.lockbutton.myValueChanged.connect(self.handleLockClicked)
 
-        self.resetbutton = QtGui.QPushButton('Reset to defaults')
+        self.resetbutton = QtWidgets.QPushButton('Reset to defaults')
         self.resetbutton.clicked.connect(self.handleResetButtonClicked)
         self.grid.addWidget(self.resetbutton, start_index+3, 0, 1, 2)
 
@@ -145,14 +145,14 @@ class RbLockWidget(QtGui.QWidget):
             try:
                 self.rblock.lock()
                 new_text += 'Success\n'
-            except Exception, e:
+            except Exception as e:
                 new_text += 'Error' + str(e) + '\n'
         else:
             new_text = 'Scanning:'
             try:
                 
                 self.rblock.scan()
-            except Exception, e:
+            except Exception as e:
                 new_text += 'Error' + str(e) + '\n'
         self.disconnect_slots()
         self.setGUIParams()
@@ -207,7 +207,7 @@ class RbLockWidget(QtGui.QWidget):
         try:
             self.rblock.set_params()
             new_text += 'Success\n'
-        except Exception, e:
+        except Exception as e:
             new_text += ' Error : ' + str(e) + '\n'
         self.append_to_log(new_text)
 
@@ -240,7 +240,7 @@ class RbLockWidget(QtGui.QWidget):
             try:
                 self.rblock.connect(str(self.lineedit_com.text()))
                 new_text += ' Connected\n'
-            except Exception, e:
+            except Exception as e:
                 # e = sys.exc_info()[0]
                 new_text += ' Error connecting: ' + str(e) + '\n'
                 self.connect_button.mySetValue(0)
@@ -255,9 +255,9 @@ class RbLockWidget(QtGui.QWidget):
 
     def loadSettings(self):
         self.settings.beginGroup('RbLockWidget')
-        self.lineedit_com.setText(str(self.settings.value('com_port', 'COM14').toByteArray()))
+        self.lineedit_com.setText(str(self.settings.value('com_port', 'COM14')))
         params_default_str = repr(self.rblock.params_default)
-        self.rblock.params = eval(str(self.settings.value('params', params_default_str).toByteArray()))
+        self.rblock.params = eval(str(self.settings.value('params', params_default_str)))
         self.settings.endGroup()
 
     def saveSettings(self):

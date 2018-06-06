@@ -1,8 +1,8 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 import sys
 
 
-class BoolBox(QtGui.QPushButton):
+class BoolBox(QtWidgets.QPushButton):
     myValueChanged = QtCore.pyqtSignal(bool)
 
     def __init__(self, value, parent=None, ontext='ON', offtext='OFF'):
@@ -43,7 +43,7 @@ class BoolBox(QtGui.QPushButton):
         self.setText(text)
 
 
-class MyDoubleSpinBox(QtGui.QDoubleSpinBox):
+class MyDoubleSpinBox(QtWidgets.QDoubleSpinBox):
 
     """Selects all text once it receives a focusInEvent.
     Use this widget instead of the usual QDoubleSpinBox for quick editing.
@@ -62,7 +62,7 @@ class MyDoubleSpinBox(QtGui.QDoubleSpinBox):
         self.selectAll()
 
 
-class MySpinBox(QtGui.QSpinBox):
+class MySpinBox(QtWidgets.QSpinBox):
 
     """Selects all text once it receives a focusInEvent.
     Use this widget instead of the usual QDoubleSpinBox for quick editing.
@@ -79,20 +79,20 @@ class MySpinBox(QtGui.QSpinBox):
     def afterFocus(self):
         self.selectAll()
 
-class SliderSpinBox(QtGui.QWidget):
+class SliderSpinBox(QtWidgets.QWidget):
     myValueChanged = QtCore.pyqtSignal(int)
 
 
     def __init__(self, value=0, valrange=(0, 1000), step_size=100, parent=None):
         super(SliderSpinBox, self).__init__(parent)
-        self.qhboxlayout = QtGui.QVBoxLayout(self)
+        self.qhboxlayout = QtWidgets.QVBoxLayout(self)
         self.setLayout(self.qhboxlayout)
 
-        self.spinbox = QtGui.QSpinBox(self)
+        self.spinbox = QtWidgets.QSpinBox(self)
         self.spinbox.setSingleStep(step_size)
         print(step_size)
         print('single step:', self.spinbox.singleStep())
-        self.slider = QtGui.QSlider(1, self)  # 1 == horizontal
+        self.slider = QtWidgets.QSlider(1, self)  # 1 == horizontal
         self.slider.setSingleStep(step_size)
 
         self.spinbox.setRange(valrange[0], valrange[1])

@@ -1,10 +1,10 @@
-from PyQt4 import QtGui, QtCore, uic
+from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from pyqtgraph.dockarea import DockArea, Dock
 import os
 from widgets.RbLockWidget import RbLockWidget
 
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
     """The only window of the application."""
 
     def __init__(self, settings):
@@ -34,8 +34,8 @@ class MainWindow(QtGui.QMainWindow):
         """Load window state from self.settings"""
 
         self.settings.beginGroup('mainwindow')
-        geometry = self.settings.value('geometry').toByteArray()
-        state = self.settings.value('windowstate').toByteArray()
+        geometry = self.settings.value('geometry')
+        state = self.settings.value('windowstate')
         dock_string = str(self.settings.value('dockstate').toString())
         if dock_string is not "":
             dock_state = eval(dock_string)
