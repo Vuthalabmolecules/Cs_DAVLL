@@ -36,7 +36,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.settings.beginGroup('mainwindow')
         geometry = self.settings.value('geometry')
         state = self.settings.value('windowstate')
-        dock_string = str(self.settings.value('dockstate').toString())
+        dock_string = str(self.settings.value('dockstate'))
         if dock_string is not "":
             dock_state = eval(dock_string)
             self.dock_area.restoreState(dock_state)
